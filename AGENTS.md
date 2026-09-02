@@ -2,8 +2,9 @@
 
 - Use React with TypeScript and Vite for the web application.
 - Use C# and ASP.NET Core (minimal APIs) for the API.
-- Keep persistence out of the project until a real need for it shows up; the marker catalog can live
-  in code as seed data until its size or editing workflow requires a database.
+- Keep persistence out of the project until a real need for it shows up; each marker is a real page
+  component under `Waymark.Web/src/content/markers`, not a database row rendered by a template -
+  don't reintroduce a backend content store for it.
 - Never invent a marker's origin, symptom, or resolution. If content is illustrative rather than a
   real solved problem, label it clearly as an example instead of implying false history.
 - Keep implementation steps narrow and independently testable.

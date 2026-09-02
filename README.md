@@ -20,15 +20,35 @@ Each entry - a **marker** - records:
 
 ## Current state
 
-The catalog currently holds a small set of **placeholder markers**. They illustrate the format a
-real entry should follow; they are not drawn from any specific project's history. Real markers get
-added here as they're found. See [`docs/build-plan.md`](docs/build-plan.md) for what's next.
+The catalog holds a small set of **placeholder markers** - illustrating the format a real entry
+should follow, not drawn from any specific project's history - alongside a growing number of
+**real markers** drawn from this workspace. Each marker's `isIllustrative` flag says which kind it
+is, and the web UI labels illustrative ones accordingly.
 
 ## Project layout
 
-- `Waymark.Web` - React, TypeScript, and Vite reference UI.
-- `Waymark.Api` - ASP.NET Core API serving the marker catalog and the built web app.
-- `Waymark.Api.Tests` - API and store tests.
+- `Waymark.Web` - React, TypeScript, and Vite UI. Each marker is a real page component under
+  [`Waymark.Web/src/content/markers`](Waymark.Web/src/content/markers) - open the file to read the
+  marker, there's no database or CMS layer in between.
+- `Waymark.Api` - ASP.NET Core host. It serves `/api/health` and the built web app; it doesn't serve
+  marker content.
+- `Waymark.Api.Tests` - API tests.
+
+## Markers
+
+Each marker is its own page, both to browse and in source:
+
+- `/markers/{id}` in the web app renders that marker's page - symptoms, root cause, resolution, and,
+  where appropriate, labeled code examples (e.g. "Problem" / "Fix") for both reading and the actual
+  implementation.
+- The same page's source lives at
+  `Waymark.Web/src/content/markers/{id}.tsx` - the file *is* the marker, not a template plus a
+  data record. [`Waymark.Web/src/content/markers/registry.ts`](Waymark.Web/src/content/markers/registry.ts)
+  lists every marker file so the catalog and router can find them.
+
+There's intentionally no marker API. The catalog is a static site once built - fetching a marker's
+own content back from a server it's already bundled into would just be a second copy to keep in
+sync.
 
 ## Local setup
 
@@ -52,10 +72,25 @@ npm run test
 
 ## Adding a marker
 
-Add an entry to the seed list in [`Waymark.Api/MarkerStore.cs`](Waymark.Api/MarkerStore.cs) with a
-unique `id`, the affected `category`, a one-line `summary`, and honest `symptoms` / `rootCause` /
-`resolution` text. Only add a marker for a problem that actually took real time to diagnose and is
-likely to come up again - not a one-off typo.
+1. Create `Waymark.Web/src/content/markers/{id}.tsx`. Export a `meta: MarkerMeta` object (`id`,
+   `title`, `category`, `summary`, `tags`, `isIllustrative`) and a default-exported page component
+   that renders the marker with `<MarkerPageHeader meta={meta} />` plus `Symptoms` / `Root cause` /
+   `Resolution` sections, and a `Code` section (using `<CodeBlock>`) where a snippet - for reading
+   and/or the actual implementation - makes it clearer. Look at
+   [`stack-dotnet-react-vite-npm.tsx`](Waymark.Web/src/content/markers/stack-dotnet-react-vite-npm.tsx)
+   for a real example and
+   [`cors-preflight-blocked-by-auth-middleware.tsx`](Waymark.Web/src/content/markers/cors-preflight-blocked-by-auth-middleware.tsx)
+   for an illustrative one.
+2. Register the new file in
+   [`registry.ts`](Waymark.Web/src/content/markers/registry.ts) so the catalog and `/markers/{id}`
+   route pick it up.
+
+Only add a marker for a problem that actually took real time to diagnose (or a decision that
+actually got made) and is likely to come up again - not a one-off typo. Set `isIllustrative: true`
+only for placeholder entries that demonstrate the format rather than recording something that
+actually happened - never for a real marker, and never leave it unset for an illustrative one. This
+is what keeps illustrative content from being mistaken for real project history in the web UI's
+"Illustrative" badge.
 
 ## License
 
