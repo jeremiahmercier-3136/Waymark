@@ -1,0 +1,19 @@
+{
+  "name": "waymark",
+  "private": true,
+  "scripts": {
+    "api": "dotnet run --project Waymark.Api",
+    "web": "npm --prefix Waymark.Web run dev",
+    "web:wait": "wait-on tcp:localhost:5119 && npm run web",
+    "dev": "concurrently --kill-others --names API,WEB --prefix-colors blue,magenta \"npm run api\" \"npm run web:wait\"",
+    "build:api": "dotnet build Waymark.slnx",
+    "build:web": "npm --prefix Waymark.Web run build",
+    "build": "npm run build:api && npm run build:web",
+    "restore:api": "dotnet restore Waymark.slnx",
+    "restore:web": "npm --prefix Waymark.Web install",
+    "restore": "npm run restore:api && npm run restore:web",
+    "test": "dotnet test Waymark.slnx",
+    "lint": "npm --prefix Waymark.Web run lint"
+  },
+  "devDependencies": { "concurrently": "^10.0.4", "wait-on": "^9.1.0" }
+}

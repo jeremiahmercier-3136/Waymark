@@ -1,0 +1,11 @@
+@Waymark.Api_HostAddress = http://localhost:5119
+
+GET {{Waymark.Api_HostAddress}}/api/health
+
+###
+
+GET {{Waymark.Api_HostAddress}}/api/markers
+
+###
+
+GET {{Waymark.Api_HostAddress}}/api/markers/vite-proxy-cold-start-404

@@ -1,0 +1,74 @@
+name: Deploy Waymark
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - Waymark.Api/**
+      - Waymark.Api.Tests/**
+      - Waymark.Web/**
+      - .github/workflows/deploy.yml
+      - Waymark.slnx
+      - Directory.Build.*
+      - Directory.Packages.props
+      - global.json
+      - NuGet.config
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      MYASP_WEBDEPLOY_SITE: ${{ vars.MYASP_WEBDEPLOY_SITE }}
+      MYASP_WEBDEPLOY_SERVER: ${{ vars.MYASP_WEBDEPLOY_SERVER }}
+      MYASP_WEBDEPLOY_USERNAME: ${{ vars.MYASP_WEBDEPLOY_USERNAME }}
+      MYASP_WEBDEPLOY_PASSWORD: ${{ secrets.MYASP_WEBDEPLOY_PASSWORD }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Waymark.Web/package-lock.json
+
+      - name: Restore API
+        run: dotnet restore Waymark.slnx
+
+      - name: Test API
+        run: dotnet test Waymark.Api.Tests/Waymark.Api.Tests.csproj --no-restore --configuration Release
+
+      - name: Lint web application
+        run: npm ci --prefix Waymark.Web && npm run lint --prefix Waymark.Web
+
+      - name: Publish combined site
+        run: dotnet publish Waymark.Api/Waymark.Api.csproj --no-restore --configuration Release --output publish
+
+      - name: Deployment configuration notice
+        if: ${{ env.MYASP_WEBDEPLOY_SITE == '' || env.MYASP_WEBDEPLOY_SITE == 'REPLACE_ME' || env.MYASP_WEBDEPLOY_SERVER == '' || env.MYASP_WEBDEPLOY_SERVER == 'REPLACE_ME' || env.MYASP_WEBDEPLOY_USERNAME == '' || env.MYASP_WEBDEPLOY_USERNAME == 'REPLACE_ME' || env.MYASP_WEBDEPLOY_PASSWORD == '' || env.MYASP_WEBDEPLOY_PASSWORD == 'REPLACE_ME' }}
+        run: Write-Warning 'Build succeeded, but deployment was skipped. Configure the Web Deploy repository variables and secret before deploying.'
+
+      - name: Deploy published site
+        if: ${{ env.MYASP_WEBDEPLOY_SITE != '' && env.MYASP_WEBDEPLOY_SITE != 'REPLACE_ME' && env.MYASP_WEBDEPLOY_SERVER != '' && env.MYASP_WEBDEPLOY_SERVER != 'REPLACE_ME' && env.MYASP_WEBDEPLOY_USERNAME != '' && env.MYASP_WEBDEPLOY_USERNAME != 'REPLACE_ME' && env.MYASP_WEBDEPLOY_PASSWORD != '' && env.MYASP_WEBDEPLOY_PASSWORD != 'REPLACE_ME' }}
+        uses: talunzhang/auto-web-deploy@7a6de6c56d0d85241cdaea2e5375920e060dd4ee # v1.0.1
+        with:
+          website-name: ${{ env.MYASP_WEBDEPLOY_SITE }}
+          server-computer-name: ${{ env.MYASP_WEBDEPLOY_SERVER }}
+          server-username: ${{ env.MYASP_WEBDEPLOY_USERNAME }}
+          server-password: ${{ env.MYASP_WEBDEPLOY_PASSWORD }}
+          source-path: '\publish\'

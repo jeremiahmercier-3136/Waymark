@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Waymark.Api.Tests/Waymark.Api.Tests.csproj" />
+  <Project Path="Waymark.Api/Waymark.Api.csproj" />
+</Solution>
