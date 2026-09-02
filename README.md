@@ -20,10 +20,11 @@ Each entry - a **marker** - records:
 
 ## Current state
 
-The catalog holds a small set of **placeholder markers** - illustrating the format a real entry
-should follow, not drawn from any specific project's history - alongside a growing number of
-**real markers** drawn from this workspace. Each marker's `isIllustrative` flag says which kind it
-is, and the web UI labels illustrative ones accordingly.
+The catalog holds one real marker (`tech-stack`), drawn from an actual decision made in this
+workspace. The illustrative placeholders the project shipped with were removed once a real marker
+existed to demonstrate the format instead. A marker's `isIllustrative` flag still exists for any
+future placeholder, and the web UI labels illustrative ones accordingly, but nothing in the catalog
+right now is illustrative.
 
 ## Project layout
 
@@ -72,15 +73,14 @@ npm run test
 
 ## Adding a marker
 
-1. Create `Waymark.Web/src/content/markers/{id}.tsx`. Export a `meta: MarkerMeta` object (`id`,
-   `title`, `category`, `summary`, `tags`, `isIllustrative`) and a default-exported page component
-   that renders the marker with `<MarkerPageHeader meta={meta} />` plus `Symptoms` / `Root cause` /
-   `Resolution` sections, and a `Code` section (using `<CodeBlock>`) where a snippet - for reading
-   and/or the actual implementation - makes it clearer. Look at
-   [`stack-dotnet-react-vite-npm.tsx`](Waymark.Web/src/content/markers/stack-dotnet-react-vite-npm.tsx)
-   for a real example and
-   [`cors-preflight-blocked-by-auth-middleware.tsx`](Waymark.Web/src/content/markers/cors-preflight-blocked-by-auth-middleware.tsx)
-   for an illustrative one.
+1. Create `Waymark.Web/src/content/markers/{id}.tsx`, where `{id}` is short - a couple of words,
+   not a full sentence of hyphens - since it's also the URL and the filename someone has to type.
+   Export a `meta: MarkerMeta` object (`id`, `title`, `category`, `summary`, `tags`,
+   `isIllustrative`) and a default-exported page component that renders the marker with
+   `<MarkerPageHeader meta={meta} />` plus `Symptoms` / `Root cause` / `Resolution` sections, and a
+   `Code` section (using `<CodeBlock>`) where a snippet - for reading and/or the actual
+   implementation - makes it clearer. Look at
+   [`tech-stack.tsx`](Waymark.Web/src/content/markers/tech-stack.tsx) for an example.
 2. Register the new file in
    [`registry.ts`](Waymark.Web/src/content/markers/registry.ts) so the catalog and `/markers/{id}`
    route pick it up.
