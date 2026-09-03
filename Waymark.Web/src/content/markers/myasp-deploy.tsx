@@ -50,7 +50,11 @@ export default function MyaspDeployPage() {
           name, server, and username are GitHub repo <strong>variables</strong>; the Web Deploy
           password is a repo <strong>secret</strong> - it's a credential, so it's never a variable,
           and it has to be typed in by hand in the repo settings since nothing should script
-          capturing it.
+          capturing it. The server and username are account-level, not per-site, so they're the
+          same across every project on this myasp.net account:{' '}
+          <code>MYASP_WEBDEPLOY_SERVER=https://win8140.site4now.net:8172/</code> and{' '}
+          <code>MYASP_WEBDEPLOY_USERNAME=jeremiahmercier-002</code>. Only{' '}
+          <code>MYASP_WEBDEPLOY_SITE</code> and the password change per project.
         </p>
         <p>
           Settings that differ in production but aren't secret - log paths, public keys, self-ping
@@ -164,11 +168,17 @@ export default function MyaspDeployPage() {
         <h2>Outside of code</h2>
         <p>These steps happen in Namecheap and the myasp.net control panel, not in the repo:</p>
         <ul>
-          <li>Point the domain's nameservers at myasp.net's nameservers, in Namecheap.</li>
+          <li>
+            Point the domain's nameservers at myasp.net's nameservers, in Namecheap:{' '}
+            <code>ns1.site4now.net</code>, <code>ns2.site4now.net</code>,{' '}
+            <code>ns3.site4now.net</code>.
+          </li>
           <li>Configure the SSL certificate for the site in the myasp.net panel.</li>
           <li>Enable Web Deploy for the site in the myasp.net panel, then copy the site name into
             the <code>MYASP_WEBDEPLOY_SITE</code> repo variable and the Web Deploy password into
-            the <code>MYASP_WEBDEPLOY_PASSWORD</code> repo secret by hand.</li>
+            the <code>MYASP_WEBDEPLOY_PASSWORD</code> repo secret by hand - <code>MYASP_WEBDEPLOY_SERVER</code>{' '}
+            and <code>MYASP_WEBDEPLOY_USERNAME</code> don't change per project, so they only need
+            setting once each time a new repo is created.</li>
           <li>Turn on the HTTP → HTTPS redirect for the site in the myasp.net panel - it edits the
             deployed <code>web.config</code> for you, so there's nothing to maintain in source.</li>
         </ul>
