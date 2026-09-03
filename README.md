@@ -20,11 +20,11 @@ Each entry - a **marker** - records:
 
 ## Current state
 
-The catalog holds one real marker (`tech-stack`), drawn from an actual decision made in this
-workspace. The illustrative placeholders the project shipped with were removed once a real marker
-existed to demonstrate the format instead. A marker's `isIllustrative` flag still exists for any
-future placeholder, and the web UI labels illustrative ones accordingly, but nothing in the catalog
-right now is illustrative.
+The catalog holds real markers only - `tech-stack` and `myasp-deploy` so far, both drawn from
+actual decisions and practice in this workspace. The illustrative placeholders the project shipped
+with were removed once real markers existed to demonstrate the format instead. A marker's
+`isIllustrative` flag still exists for any future placeholder, and the web UI labels illustrative
+ones accordingly, but nothing in the catalog right now is illustrative.
 
 ## Project layout
 

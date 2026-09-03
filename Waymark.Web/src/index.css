@@ -169,7 +169,10 @@ p { font-family: Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.6; 
   margin-bottom: 0.5rem;
 }
 .marker-page-section p { font-size: 1rem; }
-.marker-page-section p code {
+.marker-page-section a { color: var(--rust); }
+.marker-page-section ul { font-size: 1rem; margin: 0; padding-left: 1.25rem; display: grid; gap: 0.5rem; }
+.marker-page-section p code,
+.marker-page-section li code {
   background: var(--rust-soft);
   border-radius: 4px;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
