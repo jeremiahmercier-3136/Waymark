@@ -12,7 +12,9 @@
     "restore:api": "dotnet restore Waymark.slnx",
     "restore:web": "npm --prefix Waymark.Web install",
     "restore": "npm run restore:api && npm run restore:web",
-    "test": "dotnet test Waymark.slnx",
+    "test:api": "dotnet test Waymark.slnx",
+    "test:web": "npm --prefix Waymark.Web run test",
+    "test": "npm run test:api && npm run test:web",
     "lint": "npm --prefix Waymark.Web run lint"
   },
   "devDependencies": { "concurrently": "^10.0.4", "wait-on": "^9.1.0" }

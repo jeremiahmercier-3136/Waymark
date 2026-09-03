@@ -53,8 +53,8 @@ jobs:
       - name: Test API
         run: dotnet test Waymark.Api.Tests/Waymark.Api.Tests.csproj --no-restore --configuration Release
 
-      - name: Lint web application
-        run: npm ci --prefix Waymark.Web && npm run lint --prefix Waymark.Web
+      - name: Test and lint web application
+        run: npm ci --prefix Waymark.Web && npm run test --prefix Waymark.Web && npm run lint --prefix Waymark.Web
 
       - name: Publish combined site
         run: dotnet publish Waymark.Api/Waymark.Api.csproj --no-restore --configuration Release --output publish
