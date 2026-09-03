@@ -9,6 +9,7 @@ import * as tddAfterPoc from './tdd-after-poc'
 import * as selfReview from './self-review'
 import * as prodTroubleshooting from './prod-troubleshooting'
 import * as atlantisProjects from './atlantis-projects'
+import * as autoEfMigrations from './auto-ef-migrations'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -24,6 +25,7 @@ const modules: MarkerModule[] = [
   selfReview,
   prodTroubleshooting,
   atlantisProjects,
+  autoEfMigrations,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))
