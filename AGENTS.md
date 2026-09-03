@@ -10,6 +10,13 @@
 - Keep implementation steps narrow and independently testable.
 - Run relevant builds and tests after every change.
 - Do not add unnecessary abstractions or infrastructure.
+- Once a feature's initial version (a proof of concept) is working, switch to red-green TDD for
+  further changes: for every reported bug or requested behavior change, first write a test that
+  captures the desired behavior and fails, then implement until it passes. Tests must exercise the
+  actual behavior in question, not trivial assertions.
+- If a change breaks an existing test, don't reflexively revert the change or reflexively edit the
+  test to match it - evaluate both the test and the new behavior against what's actually correct,
+  and fix whichever one (or both) is wrong.
 - Match existing patterns, structure, and conventions rather than introducing inconsistent new
   ones; refactor or reorganize existing code when a change no longer fits it cleanly instead of
   bolting on. Optimize for the codebase staying coherent, not just for the immediate change working.
