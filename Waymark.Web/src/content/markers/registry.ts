@@ -7,6 +7,7 @@ import * as spaCacheBusting from './spa-cache-busting'
 import * as unitTesting from './unit-testing'
 import * as tddAfterPoc from './tdd-after-poc'
 import * as selfReview from './self-review'
+import * as prodTroubleshooting from './prod-troubleshooting'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -20,6 +21,7 @@ const modules: MarkerModule[] = [
   unitTesting,
   tddAfterPoc,
   selfReview,
+  prodTroubleshooting,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))

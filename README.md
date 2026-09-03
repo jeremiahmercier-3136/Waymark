@@ -20,11 +20,11 @@ Each entry - a **marker** - records:
 
 ## Current state
 
-The catalog holds real markers only - `tech-stack` and `myasp-deploy` so far, both drawn from
-actual decisions and practice in this workspace. The illustrative placeholders the project shipped
-with were removed once real markers existed to demonstrate the format instead. A marker's
-`isIllustrative` flag still exists for any future placeholder, and the web UI labels illustrative
-ones accordingly, but nothing in the catalog right now is illustrative.
+The catalog holds real markers only, drawn from actual decisions and practice in this workspace.
+The illustrative placeholders the project shipped with were removed once real markers existed to
+demonstrate the format instead. A marker's `isIllustrative` flag still exists for any future
+placeholder, and the web UI labels illustrative ones accordingly, but nothing in the catalog right
+now is illustrative.
 
 ## Project layout
 
@@ -91,6 +91,17 @@ only for placeholder entries that demonstrate the format rather than recording s
 actually happened - never for a real marker, and never leave it unset for an illustrative one. This
 is what keeps illustrative content from being mistaken for real project history in the web UI's
 "Illustrative" badge.
+
+## Production diagnostics
+
+The host gives no console, RDP, or FTP access, so Waymark exposes structured logs through a
+certificate-authorized `GET /api/operations/logs/{date}`. See the
+[`prod-troubleshooting`](Waymark.Web/src/content/markers/prod-troubleshooting.tsx) marker for the
+full pattern. To retrieve logs, an operator or agent with the private key installed runs:
+
+```powershell
+./scripts/Get-ProductionLogs.ps1 -BaseUrl 'https://<site>.site4now.net' -Date 2026-09-03
+```
 
 ## License
 

@@ -1,5 +1,7 @@
 **/bin/
 **/obj/
+Waymark.Api/App_Data/
+waymark-*.ndjson
 **/node_modules/
 **/dist/
 .env
