@@ -60,7 +60,7 @@ npm run restore
 npm run dev
 ```
 
-The web app runs on `http://localhost:5178`. The API runs on `http://localhost:5119`, with health at
+The web app runs on `http://localhost:5179`. The API runs on `http://localhost:5119`, with health at
 `/api/health`. Requests to `/api` from Vite are proxied to the API.
 
 Useful commands:
