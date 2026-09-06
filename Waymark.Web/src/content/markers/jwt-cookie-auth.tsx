@@ -95,16 +95,16 @@ export default function JwtCookieAuthPage() {
           here without a separate anti-forgery token scheme.
         </p>
         <p className="note">
-          Where this doesn't have to apply: an app that's fine with an <em>encrypted</em>,
-          non-debuggable session (Identity's default cookie) already gets the same XSS safety with
-          less custom code - the tradeoff this marker exists to name is specifically debuggability
-          versus writing your own JWT plumbing, not security versus insecurity. A project that
-          needs instant, no-JWT-at-all revocation with nothing to decode (Cadence's shape) is also
-          a reasonable choice on its own terms. This is the standard going forward for any project
-          that specifically wants a self-contained, humanly-decodable token, DMGPT included -
-          MedServ, ModelMosaic, Avantra, and Cadence still need to be reviewed against it
-          individually rather than converted wholesale, since each has real users depending on its
-          current session behavior.
+          This is the one standardized auth pattern for every project in this workspace going
+          forward, not a menu - DMGPT, MedServ, ModelMosaic, Avantra, and Cadence's mismatched
+          approaches are exactly the problem this marker exists to end. A signing key is not
+          optional or specific to any one project's setup: an HMAC-signed, humanly-decodable JWT
+          is only possible with a shared secret to sign it, so every project on this pattern needs
+          its own <code>SigningKey</code> - that is the one inherent cost of choosing decodability,
+          not a gap the pattern failed to close. MedServ, ModelMosaic, and Avantra are migrated
+          project by project rather than in one sweep only because each has real users depending
+          on its current session behavior mid-migration, not because their existing mechanisms are
+          an acceptable alternative to keep.
         </p>
       </section>
 
