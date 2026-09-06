@@ -14,6 +14,7 @@ import * as autoEfMigrations from './auto-ef-migrations'
 import * as noCommittedSecrets from './no-committed-secrets'
 import * as namingConventions from './naming-conventions'
 import * as faviconHeaderLogo from './favicon-header-logo'
+import * as waymarkReference from './waymark-reference'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -34,6 +35,7 @@ const modules: MarkerModule[] = [
   noCommittedSecrets,
   namingConventions,
   faviconHeaderLogo,
+  waymarkReference,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))
