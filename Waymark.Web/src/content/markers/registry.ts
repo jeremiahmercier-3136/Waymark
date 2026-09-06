@@ -17,6 +17,7 @@ import * as namingConventions from './naming-conventions'
 import * as faviconHeaderLogo from './favicon-header-logo'
 import * as waymarkReference from './waymark-reference'
 import * as readmeProductionUrl from './readme-production-url'
+import * as jwtCookieAuth from './jwt-cookie-auth'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -40,6 +41,7 @@ const modules: MarkerModule[] = [
   faviconHeaderLogo,
   waymarkReference,
   readmeProductionUrl,
+  jwtCookieAuth,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))
