@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: 'Design one icon mark, then derive the favicon from it - simplified, unique, transparent',
   category: 'Frontend',
   summary:
-    "MedServ's tab icon is still Vite's scaffolded default while its header shows the real client logo - and every other site's favicon so far uses a solid-color circle or rounded-rect background instead of a mark that stands on its own.",
+    'An audit of every project turned up three patterns: a favicon that never got past the framework default (MedServ, Virtual911), no favicon at all (AtlantisTech, DMGPT), and - everywhere else - a real mark sitting on a filled circle or rounded-rect background instead of standing on its own.',
   tags: ['frontend', 'branding', 'favicon'],
   isIllustrative: false,
 }
@@ -20,14 +20,19 @@ export default function FaviconHeaderLogoPage() {
       <section className="marker-page-section">
         <h2>Symptoms</h2>
         <p>
-          Two separate things show up under this same heading. First, a tab icon that has nothing
-          to do with the app: MedServ's <code>favicon.svg</code> is still the purple gradient mark
-          Vite scaffolds into every new project, while <code>App.tsx</code>'s header renders{' '}
-          <code>/ams-logo.png</code>, Advanced Medical Services' real logo. Second, a subtler
-          drift: every favicon in the workspace so far - Waymark's own included - is a small mark
-          sitting on a filled circle or rounded-rect background (a colored disc, a dark rounded
-          square). It looks fine, but it's a badge shape, not a mark that was designed to work on
-          its own, and it's the same crutch on every site regardless of what the mark actually is.
+          Three separate things showed up under this same heading when every project was checked
+          against this bar. First, a tab icon with nothing to do with the app: MedServ's{' '}
+          <code>favicon.svg</code> was still the purple gradient mark Vite scaffolds into every new
+          project, while its header rendered <code>/ams-logo.png</code>, Advanced Medical Services'
+          real logo - and Virtual911's CAD console had the identical untouched default, with no
+          header mark at all. Second, no favicon in the first place: AtlantisTech had none, and its
+          header's "mark" was a CSS clip-path triangle with a letter in it; DMGPT's{' '}
+          <code>favicon.svg</code> was an empty file and <code>index.html</code> still pointed at a
+          404ing <code>/vite.svg</code>. Third, and most widespread: every other favicon in the
+          workspace - Waymark's own included - was a small mark sitting on a filled circle or
+          rounded-rect background. It looked fine, but it was a badge shape, not a mark designed to
+          work on its own, and it was the same crutch on every site regardless of what the mark
+          actually was.
         </p>
       </section>
 
@@ -38,7 +43,8 @@ export default function FaviconHeaderLogoPage() {
           <code>public/</code>. Most projects redraw it once into a brand mark and move on; when a
           project instead gets a real logo from somewhere else (a client-provided PNG, as in
           MedServ) for the header, nothing prompts revisiting the favicon, so the scaffold default
-          survives untouched.
+          survives untouched - or, if the link in <code>index.html</code> is never fixed to match,
+          survives pointing at a file that isn't even there anymore (DMGPT).
         </p>
         <p>
           The background-fill habit has a simpler cause: a solid rect or circle behind the mark is
@@ -68,21 +74,28 @@ export default function FaviconHeaderLogoPage() {
           usually the same file when the mark is already simple enough (as with Avantra's,
           ModelMosaic's, and Runbook's marks, each paired with separate header text), but the
           favicon is allowed to be a plainer derivative of a more detailed header logo - it doesn't
-          have to be a byte-identical asset, just recognizably the same mark.
+          have to be a byte-identical asset, just recognizably the same mark. When the header logo
+          is a real asset that isn't a simplifiable icon at all (MedServ's AMS wordmark, DMGPT's
+          avatar illustration), leave it alone and derive the favicon from its colors and initial
+          instead of inventing an unrelated icon.
         </p>
-        <p className="note">
-          No favicon in the workspace meets the transparent-background bar yet - this is the
-          standard for new sites going forward, not a retroactive fix applied to existing ones.
+        <p>
+          One thing the background fill was quietly doing: guaranteeing the mark showed up against
+          any surface. Drop it, and the mark's own color has to carry that job instead - including
+          on browser chrome the mark's own designer wasn't thinking about. Ravenfrost's first pass
+          used the pale ice-blue from its own dark theme, which nearly disappeared on a light or
+          white tab; it needed a darker mid-tone before it read on both. Check a new mark against a
+          light tab and a dark one, not just the theme it was designed for.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Code</h2>
-        <p className="note">Waymark's own favicon today - a mark that leans on a background fill.</p>
+        <p className="note">Waymark's own favicon, before and after this audit.</p>
         <div className="code-examples">
           <CodeBlock
             example={{
-              label: 'Waymark.Web/public/favicon.svg - current',
+              label: 'Waymark.Web/public/favicon.svg - before',
               language: 'xml',
               code: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <circle cx="32" cy="32" r="30" fill="#b8410f" />
@@ -92,14 +105,21 @@ export default function FaviconHeaderLogoPage() {
           />
           <CodeBlock
             example={{
-              label: 'Same idea, transparent background instead',
+              label: 'Waymark.Web/public/favicon.svg - after',
               language: 'xml',
               code: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <path d="M19 39 L32 23 L45 39" fill="none" stroke="#b8410f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M18 30 L32 16 L46 30" fill="none" stroke="#b8410f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M32 22 V54" fill="none" stroke="#b8410f" stroke-width="6" stroke-linecap="round" />
+  <circle cx="32" cy="54" r="4" fill="#b8410f" />
 </svg>`,
             }}
           />
         </div>
+        <p className="note">
+          Every project's fix is in that project's own history: AtlantisTech, Avantra, Cadence,
+          DMGPT, MedServ, ModelMosaic, Runbook, Virtual911, Waymark, and the four personal sites
+          were all checked and, except Avantra, changed.
+        </p>
       </section>
     </article>
   )
