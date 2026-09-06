@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: 'Design one icon mark, then derive the favicon from it - simplified, unique, transparent',
   category: 'Frontend',
   summary:
-    'An audit of every project turned up three patterns: a favicon that never got past the framework default (MedServ, Virtual911), no favicon at all (AtlantisTech, DMGPT), and - everywhere else - a real mark sitting on a filled circle or rounded-rect background instead of standing on its own.',
+    'An audit of every project turned up three patterns: a favicon that never got past the framework default (MedServ, Virtual911, and - found in a later pass - Bizfront\'s Main and Umbraco tracks), no favicon at all (AtlantisTech, DMGPT, and Bizfront\'s Orchard Core track), and - everywhere else - a real mark sitting on a filled circle or rounded-rect background instead of standing on its own.',
   tags: ['frontend', 'branding', 'favicon'],
   isIllustrative: false,
 }
@@ -33,6 +33,17 @@ export default function FaviconHeaderLogoPage() {
           rounded-rect background. It looked fine, but it was a badge shape, not a mark designed to
           work on its own, and it was the same crutch on every site regardless of what the mark
           actually was.
+        </p>
+        <p>
+          Bizfront wasn't in the original sweep - it's a multi-project ASP.NET Core solution
+          (<code>Main/</code>, <code>Umbraco/</code>, <code>OrchardCore/</code>), not a Vite app, so
+          it didn't surface in the first pass looking for the Vite scaffold default. A later check
+          found the same first-pattern bug by a different route: <code>Main/</code> and{' '}
+          <code>Umbraco/</code>'s <code>favicon.ico</code> were byte-identical to the stock ASP.NET
+          Core template icon (confirmed against a throwaway scaffold project's own untouched
+          default), and <code>OrchardCore/</code> had no favicon file at all - the framework-default
+          and no-favicon patterns showing up together in one project, the same way
+          MedServ/Virtual911 and AtlantisTech/DMGPT showed up on the Vite side.
         </p>
       </section>
 
@@ -118,7 +129,13 @@ export default function FaviconHeaderLogoPage() {
         <p className="note">
           Every project's fix is in that project's own history: AtlantisTech, Avantra, Cadence,
           DMGPT, MedServ, ModelMosaic, Runbook, Virtual911, Waymark, and the four personal sites
-          were all checked and, except Avantra, changed.
+          were all checked and, except Avantra, changed. Bizfront was checked in a later pass and
+          changed too: one icon-only mark (an open doorway/archway - "storefront front door", tying
+          the shape back to the product name) in a single accent color chosen for contrast on both
+          light and dark tab chrome, shared as the same <code>favicon.ico</code>/
+          <code>favicon.svg</code> pair across all three of its sites (<code>Main/</code>,{' '}
+          <code>Umbraco/</code>, <code>OrchardCore/</code>) so the brand mark is one asset, not
+          three independent guesses.
         </p>
       </section>
     </article>
