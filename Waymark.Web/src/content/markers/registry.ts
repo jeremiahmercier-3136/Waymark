@@ -12,6 +12,7 @@ import * as prodTroubleshooting from './prod-troubleshooting'
 import * as atlantisProjects from './atlantis-projects'
 import * as autoEfMigrations from './auto-ef-migrations'
 import * as noCommittedSecrets from './no-committed-secrets'
+import * as noSecretsInSession from './no-secrets-in-session'
 import * as namingConventions from './naming-conventions'
 import * as faviconHeaderLogo from './favicon-header-logo'
 import * as waymarkReference from './waymark-reference'
@@ -34,6 +35,7 @@ const modules: MarkerModule[] = [
   atlantisProjects,
   autoEfMigrations,
   noCommittedSecrets,
+  noSecretsInSession,
   namingConventions,
   faviconHeaderLogo,
   waymarkReference,
