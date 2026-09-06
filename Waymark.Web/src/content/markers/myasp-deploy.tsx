@@ -62,12 +62,26 @@ export default function MyaspDeployPage() {
           <code>appsettings.json</code>, the normal ASP.NET Core way.
         </p>
         <p>
-          Actual secrets (connection strings, API keys) go in as GitHub repo secrets, and a
-          workflow step merges them into <code>publish/appsettings.Production.json</code> right
+          Actual secrets (API keys, tokens, a database password) go in as GitHub repo secrets, and
+          a workflow step merges them into <code>publish/appsettings.Production.json</code> right
           before the deploy step - so the running app still just reads ordinary configuration, and
           rotating a secret means updating it in GitHub, not logging into the server. This
           replaced the app-pool-environment-variable approach going forward; new projects
-          shouldn't add production secrets as app pool environment variables.
+          shouldn't add production secrets as app pool environment variables. A connection string
+          is the one exception worth calling out specifically: it's a template committed to{' '}
+          <code>appsettings.Production.json</code> with the password field left empty, joined with
+          a single <code>DatabasePassword</code> secret at application startup rather than merged
+          as a whole string - see <Link to="/markers/postgres-docker">postgres-docker</Link> for
+          why and how.
+        </p>
+        <p className="note">
+          MedServ, ModelMosaic, DMGPT, Virtual911, and Runbook were still setting real production
+          secrets as myASP.NET application-environment variables - or, for DMGPT and Runbook,
+          hadn't wired their secrets into deployment at all yet - rather than GitHub secrets merged
+          into <code>appsettings.Production.json</code>. All five were migrated to this pattern,
+          and Cadence's existing whole-connection-string secret was migrated to the{' '}
+          <Link to="/markers/postgres-docker">postgres-docker</Link> template-plus-password shape
+          for consistency.
         </p>
         <p>
           Because the app pool is shared across sites, each API project sets{' '}
@@ -118,19 +132,22 @@ export default function MyaspDeployPage() {
               language: 'powershell',
               code: `- name: Write production application settings
   env:
-    CONNECTIONSTRINGS__MYAPP: \${{ secrets.CONNECTIONSTRINGS__MYAPP }}
+    DATABASE_PASSWORD: \${{ secrets.CADENCE_DB_PASSWORD }}
   run: |
+    if ([string]::IsNullOrWhiteSpace($env:DATABASE_PASSWORD)) { throw 'CADENCE_DB_PASSWORD is not configured.' }
     $settingsPath = Join-Path $PWD 'publish/appsettings.Production.json'
     $settings = if (Test-Path $settingsPath) {
       Get-Content $settingsPath -Raw | ConvertFrom-Json -AsHashtable
     } else { @{} }
-    $settings.ConnectionStrings = @{ MyApp = $env:CONNECTIONSTRINGS__MYAPP }
+    $settings.DatabasePassword = $env:DATABASE_PASSWORD
     [System.IO.File]::WriteAllText(
       $settingsPath,
       ($settings | ConvertTo-Json -Depth 5),
       [System.Text.UTF8Encoding]::new($false))
     # Cadence's real step adds WebPush and native-push credentials the same way -
-    # one env var in, one field merged into the hashtable, per secret.`,
+    # one env var in, one field merged into the hashtable, per secret. The connection
+    # string itself needs no step here at all: it's a committed template (see
+    # postgres-docker) that travels with the publish output unmodified.`,
             }}
           />
           <CodeBlock
