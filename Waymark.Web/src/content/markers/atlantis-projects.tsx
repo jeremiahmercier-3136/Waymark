@@ -39,11 +39,15 @@ export default function AtlantisProjectsPage() {
       <section className="marker-page-section">
         <h2>Resolution</h2>
         <p>
-          When a new project reaches a real, working, deployed state, add it to Atlantis
-          Technologies the same way Cadence and Avantra were added before it: a project card in{' '}
-          <code>AtlantisTech.Web/src/App.tsx</code>'s projects section (type, title, pitch, tech
-          stack, live-site link), and an entry in <code>AtlantisTech.Api/Program.cs</code>'s{' '}
-          <code>site-status</code> list so the portfolio's own status page monitors it too.
+          When a new project reaches a real, working, deployed state, add an entry for it to{' '}
+          <code>AtlantisTech.Api/Program.cs</code>'s <code>site-status</code> list (name, URL,
+          health-check URL) so the portfolio's own status page monitors it - every deployed project
+          gets this, personal sites included. If the project is a consulting/technology showcase
+          rather than a personal site, it also gets a project card in{' '}
+          <code>AtlantisTech.Web/src/pages/Projects.tsx</code> (type, title, pitch, tech stack,
+          live-site link) the same way Cadence and Avantra were added before it - personal sites
+          (Jeremiah Mercier, Ravenfrost, André René, Luc Nathanael) are monitored but deliberately
+          don't get a project card, since they aren't Atlantis Technologies' own work to showcase.
         </p>
       </section>
 
@@ -51,15 +55,16 @@ export default function AtlantisProjectsPage() {
         <h2>Code</h2>
         <p className="note">
           This project's own card, added to AtlantisTech when this marker was written - see{' '}
-          <a href="https://github.com/jeremiahmercier-3136/AtlantisTech/blob/main/AtlantisTech.Web/src/App.tsx">
-            AtlantisTech.Web/src/App.tsx
-          </a>
-          .
+          <a href="https://github.com/jeremiahmercier-3136/AtlantisTech/blob/main/AtlantisTech.Web/src/pages/Projects.tsx">
+            AtlantisTech.Web/src/pages/Projects.tsx
+          </a>{' '}
+          (moved there from <code>App.tsx</code> in a later restructuring - the projects list,
+          the status page, and the rest of the site are now separate route pages).
         </p>
         <div className="code-examples">
           <CodeBlock
             example={{
-              label: 'AtlantisTech.Web/src/App.tsx - project card',
+              label: 'AtlantisTech.Web/src/pages/Projects.tsx - project card',
               language: 'tsx',
               code: `<article className="project-card">
   <div className="project-number">05</div>
@@ -93,6 +98,14 @@ export default function AtlantisProjectsPage() {
             }}
           />
         </div>
+        <p className="note">
+          The <code>site-status</code> list is the one every deployed project belongs on,
+          personal sites included. As of this writing it covers André René, Atlantis Technologies,
+          Avantra, Bizfront, Cadence, DMGPT, Jeremiah Mercier, Luc Nathanael, MedServ, Model
+          Mosaic, Ravenfrost, Runbook, Virtual911, and Waymark - the two personal sites (André
+          René, Luc Nathanael) were live but missing from this list until this marker's review
+          caught it.
+        </p>
       </section>
     </article>
   )
