@@ -8,7 +8,7 @@ export const meta: MarkerMeta = {
   title: 'A connection-string template plus a password secret, joined at runtime',
   category: 'Data',
   summary:
-    "Copying a project's Docker Compose file for Postgres copies its host port too, so a second project's database can't start while the first one's is already running. Separately, treating a whole connection string as one opaque GitHub secret didn't stop MedServ, ModelMosaic, and DMGPT from skipping GitHub entirely and setting it as a myASP.NET application-environment variable instead - ModelMosaic's README went as far as telling people never to use GitHub Actions secrets at all.",
+    "Copying a project's Docker Compose file for Postgres copies its host port too, so a second project's database can't start while the first one's is already running. Separately, treating a whole connection string as one opaque secret leaves its non-secret parts (host, port, database, user) unreviewable in a diff, and makes wiring up a GitHub secret feel heavier than it needs to.",
   tags: ['postgres', 'docker', 'user-secrets', 'connection-string', 'agents-md'],
   isIllustrative: false,
 }
@@ -23,25 +23,17 @@ export default function PostgresDockerPage() {
         <p>
           Setting up a local Postgres for a new project either means installing it natively -
           version drift, another always-on background service - or copying an earlier project's
-          Docker Compose file, which copies its host port too. Three of this workspace's projects
-          (Cadence, MedServ, Runbook) independently ended up with their Postgres container on the
-          same host port, so only one of them can have its database running at a time.
+          Docker Compose file, which copies its host port too, so two projects' containers collide
+          and only one can have its database running at a time.
         </p>
         <p>
-          Separately, this marker used to say a connection string should never be pieced together
-          from separate host/port/database/user settings, and should instead be treated as one
-          whole secret. That part was right, but it turned out to be an incomplete fix: because the
-          whole string was one opaque blob, there was no way to review host, port, database name,
-          or username in a diff - a connection string quietly pointed at the wrong server would be
-          invisible until something broke. And treating the entire thing as equally sensitive made
-          the GitHub-secret route feel heavier than it needed to be, which is likely why MedServ,
-          ModelMosaic, and DMGPT each ended up configuring the real production connection string as
-          a myASP.NET application-environment variable instead, set by hand in the control panel,
-          exactly the pattern <Link to="/markers/myasp-deploy">myasp-deploy</Link> exists to replace.
-          ModelMosaic's own README had hardened this into an explicit rule: "Never create a{' '}
-          <code>.env</code> file or put secrets in GitHub Actions variables" - technically correct
-          about <code>.env</code> files and about <code>vars</code> specifically, but read as a
-          blanket rule against GitHub Actions secrets entirely, which was never the actual problem.
+          Separately, treating a whole connection string as one opaque secret means there's no way
+          to review host, port, database name, or username in a diff - a connection string quietly
+          pointed at the wrong server is invisible until something breaks. And treating the entire
+          thing as equally sensitive makes wiring up a GitHub secret feel heavier than it needs to,
+          which nudges toward setting the real production connection string as a myASP.NET
+          application-environment variable by hand instead - exactly the pattern{' '}
+          <Link to="/markers/myasp-deploy">myasp-deploy</Link> exists to replace.
         </p>
       </section>
 
@@ -52,15 +44,12 @@ export default function PostgresDockerPage() {
           already claimed elsewhere in the workspace.
         </p>
         <p>
-          The connection-string problem had a different root: .NET's <code>ConnectionStrings</code>{' '}
-          configuration section has exactly one contract - every key under it is a complete,
-          ready-to-use connection string - so once the rule became "the whole thing is the secret,"
-          there was no correct place left to keep the non-secret parts (host, port, database,
-          username) reviewable. The password is the only part that's actually a credential. Folding
-          everything else into the same opaque secret made the non-secret parts unreviewable for no
-          reason, and made hand-editing a myASP.NET environment variable feel like the path of
-          least resistance compared to wiring a new GitHub secret through Actions - undoing the
-          actual goal of rotating a secret without logging into the server.
+          .NET's <code>ConnectionStrings</code> configuration section has exactly one contract -
+          every key under it is a complete, ready-to-use connection string - so treating "the whole
+          thing" as the secret leaves no correct place to keep the non-secret parts (host, port,
+          database, username) reviewable. The password is the only part that's actually a
+          credential; folding the rest into the same opaque secret makes it unreviewable for no
+          reason.
         </p>
       </section>
 
@@ -93,10 +82,8 @@ export default function PostgresDockerPage() {
           directly rather than leaving implicit:
         </p>
         <p>
-          Never a <code>.env</code> file, for a connection string or anything else. This
-          workspace's local secret store is .NET user-secrets; <code>.env</code> files were an
-          early scaffolding habit that never got written down as forbidden, so it kept recurring
-          project to project until ModelMosaic's README said so explicitly.
+          Never a <code>.env</code> file, for a connection string or anything else - this
+          workspace's local secret store is .NET user-secrets.
         </p>
         <p>
           A GitHub Actions <strong>secret</strong>, never a GitHub Actions <strong>variable</strong>.
@@ -104,16 +91,14 @@ export default function PostgresDockerPage() {
           site name, a server hostname, a public URL. Actions <code>secrets</code> are encrypted
           and redacted from logs - the only place a password, API key, or token belongs.{' '}
           <code>DatabasePassword</code>, and any other real secret, is a <code>secrets.*</code>{' '}
-          reference, full stop; that's a rule about <code>vars</code> specifically, not a reason to
-          avoid GitHub Actions secrets altogether.
+          reference, full stop.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Code</h2>
         <p className="note">
-          The shape now used by every project in this workspace with a real Postgres connection
-          string: Cadence, MedServ, ModelMosaic, and DMGPT.
+          The shape used by every project in this workspace with a real Postgres connection string.
         </p>
         <div className="code-examples">
           <CodeBlock

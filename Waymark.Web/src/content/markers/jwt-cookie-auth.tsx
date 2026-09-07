@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: 'A decodable JWT in an HttpOnly cookie, with server-side revocation',
   category: 'Security',
   summary:
-    'DMGPT, Cadence, MedServ, ModelMosaic, and Avantra independently ended up with four different auth mechanisms - a JWT in localStorage, a hand-rolled DB-checked bearer token, and two flavors of ASP.NET Core Identity cookie - with no written-down standard and no comparison of which was actually secure.',
+    'A JWT stored in localStorage and read back into an Authorization header is the textbook XSS anti-pattern - any script running on the page can read localStorage and exfiltrate a working token. An HttpOnly cookie fixes that without giving up what a plain JWT is good for: a token you can still paste into jwt.io and read.',
   tags: ['auth', 'jwt', 'cookies', 'xss', 'agents-md'],
   isIllustrative: false,
 }
@@ -20,42 +20,23 @@ export default function JwtCookieAuthPage() {
       <section className="marker-page-section">
         <h2>Symptoms</h2>
         <p>
-          Asked to compare DMGPT's auth against a few other projects in this workspace turned up
-          four unrelated mechanisms. DMGPT issued a self-signed JWT and stored it in{' '}
-          <code>localStorage</code>, reading it back out to attach as an{' '}
-          <code>Authorization: Bearer</code> header on every request. Cadence checked a random
-          opaque token directly against a <code>UserSessions</code> table - no JWT at all.
-          MedServ, ModelMosaic, and Avantra used ASP.NET Core Identity's cookie authentication,
-          two of them persisting the Data Protection key ring to their database and one leaving
-          it on local defaults. Nothing in the workspace said which of these was the standard, or
-          why they'd diverged.
+          A JWT gets issued, stored in <code>localStorage</code>, and read back out to attach as an{' '}
+          <code>Authorization: Bearer</code> header on every request - because a plain JWT is easy
+          to paste into jwt.io and debug. But <code>localStorage</code> is readable by any script
+          running on the page, so an XSS anywhere in the app can exfiltrate a working token; and if
+          logout only clears the token client-side, a stolen token stays valid for its full lifetime
+          regardless.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Root cause</h2>
         <p>
-          Each project's auth got built in isolation by whoever needed login first, and every
-          approach quietly optimized for a different single concern instead of the whole picture:
-          DMGPT optimized for "the token is easy to read for debugging" and got that by storing a
-          plain JWT in <code>localStorage</code> - which is also exactly the storage location
-          modern guidance (OWASP included) singles out as the JWT anti-pattern, because any XSS
-          anywhere in the app can read <code>localStorage</code> and exfiltrate a working token.
-          Worse, DMGPT's logout only ever removed the token client-side; a stolen token stayed
-          valid for its full lifetime regardless. ASP.NET Core Identity's default cookie
-          optimized for "safe from XSS" correctly - an <code>HttpOnly</code> cookie's value is
-          withheld from <code>document.cookie</code> and every other JS-facing API by the browser
-          itself, not by encrypting it - but Identity layers its own Data Protection encryption on
-          top, which throws away the ability to just decode the payload for debugging the way a
-          plain JWT allows (paste it into jwt.io; an Identity cookie needs the actual Data
-          Protection key ring and .NET code to unprotect). Cadence sidestepped the whole question
-          by not using a bearer credential's cryptography at all.
-        </p>
-        <p>
-          None of these are wrong in isolation. The actual problem was that nobody had written
-          down that <code>HttpOnly</code> already solves the real threat (script-based token
-          theft) without requiring the payload to be unreadable, so there was no reason DMGPT's
-          debuggable-JWT goal and Identity's XSS-safety goal had to trade off against each other.
+          The debuggable-JWT goal and the safe-from-XSS goal don't actually have to trade off
+          against each other. An <code>HttpOnly</code> cookie's value is withheld from{' '}
+          <code>document.cookie</code> and every other JS-facing API by the browser itself, not by
+          encrypting it - so it closes the real threat (script-based token theft) while the token
+          itself stays a plain, decodable JWT.
         </p>
       </section>
 
@@ -76,14 +57,12 @@ export default function JwtCookieAuthPage() {
         </p>
         <p>
           <code>HttpOnly</code> only stops <em>script</em>-based theft of the cookie's value, not
-          the browser from sending it - so this also closes the "logout doesn't actually log
-          anyone out" gap DMGPT had. Every issued token carries a <code>jti</code> claim; a{' '}
-          <code>RevokedTokens</code> table records which ones have been explicitly killed, checked
+          the browser from sending it - so a stolen token still needs a way to be invalidated on
+          logout, not just deleted client-side. Every issued token carries a <code>jti</code> claim;
+          a <code>RevokedTokens</code> table records which ones have been explicitly killed, checked
           in <code>OnTokenValidated</code> on every request. Logout revokes the current token's{' '}
-          <code>jti</code> and clears the cookie, so a token stolen through some other channel
-          (a compromised machine, a leaked log line) can actually be invalidated before it expires
-          - something none of DMGPT, MedServ's, ModelMosaic's, or Avantra's previous setups did on
-          their own logout path.
+          <code>jti</code> and clears the cookie, so a token stolen through some other channel (a
+          compromised machine, a leaked log line) can actually be invalidated before it expires.
         </p>
         <p>
           <code>SameSite=Strict</code> is doing real work here too: because it's about the
@@ -95,54 +74,77 @@ export default function JwtCookieAuthPage() {
           here without a separate anti-forgery token scheme.
         </p>
         <p className="note">
-          This is the one standardized auth pattern for every project in this workspace going
-          forward, not a menu - DMGPT, MedServ, ModelMosaic, Avantra, and Cadence's mismatched
-          approaches are exactly the problem this marker exists to end. A signing key is not
-          optional or specific to any one project's setup: an HMAC-signed, humanly-decodable JWT
-          is only possible with a shared secret to sign it, so every project on this pattern needs
-          its own <code>SigningKey</code> - that is the one inherent cost of choosing decodability,
-          not a gap the pattern failed to close. MedServ, ModelMosaic, and Avantra are migrated
-          project by project rather than in one sweep only because each has real users depending
-          on its current session behavior mid-migration, not because their existing mechanisms are
-          an acceptable alternative to keep.
+          A signing key is not optional or specific to any one project's setup: an HMAC-signed,
+          humanly-decodable JWT is only possible with a shared secret to sign it, so every project
+          on this pattern needs its own <code>SigningKey</code> - that's the one inherent cost of
+          choosing decodability, not a gap in the pattern.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Signing key storage: honest about the ceiling</h2>
         <p>
-          No managed certificate or HSM-backed key store is available on the shared myasp.net
-          hosting DMGPT, MedServ, and ModelMosaic deploy to - confirmed, not assumed. ModelMosaic's
-          own <code>docs/data-protection-keys.md</code> records two separate production attempts
-          (2026-09-01/02) to encrypt Data Protection's key ring with a certificate, both failing
-          with the identical <code>CryptographicException</code> from the host's locked-down IIS
-          App Pool blocking native PKCS12 import - two structurally different loading strategies,
-          the same wall both times.
+          On shared hosting with no managed certificate or HSM-backed key store available,
+          provisioning <code>SigningKey</code> as a GitHub Actions secret and merging it into{' '}
+          <code>appsettings.Production.json</code> at deploy time gives it no at-rest protection
+          beyond what an unmanaged, auto-generated key would have on the same host - once deployed,
+          it's plaintext on the server either way, readable to anyone with server-level access.
+          Don't oversell this pattern as more secure than that on hosting like this.
         </p>
         <p>
-          Given that ceiling, provisioning <code>SigningKey</code> as a GitHub Actions secret and
-          merging it into <code>appsettings.Production.json</code> at deploy time gives it no
-          at-rest protection beyond what an unmanaged, auto-generated key - the shape something
-          like IdentityServer's <code>AddDeveloperSigningCredential()</code> produces - would have
-          on the same host. Once deployed, it's plaintext on the server either way: readable to
-          anyone with server-level access, no HSM, no envelope encryption. Calling this pattern
-          more secure than that on this hosting would be exactly the kind of overstatement this
-          marker exists to correct, not repeat.
-        </p>
-        <p>
-          What genuinely differs, and is worth keeping despite that ceiling: the key never passes
-          through git history, a pull request diff, or a CI log during provisioning - GitHub
-          redacts secret values from logs and never exposes a set value back to anyone, including
-          whoever set it. And rotating it is one clean, known step (update the secret, redeploy)
-          instead of an auto-generated file with no designed rotation path at all.
+          What genuinely differs: the key never passes through git history, a pull request diff, or
+          a CI log during provisioning - GitHub redacts secret values from logs and never exposes a
+          set value back to anyone, including whoever set it. And rotating it is one clean, known
+          step (update the secret, redeploy) instead of an auto-generated file with no designed
+          rotation path at all.
         </p>
         <p className="note">
-          This is the accepted approach for now specifically because a real certificate/HSM/
-          secrets-manager option isn't available on this hosting - not a claim that it's secure
-          against a compromised host. Revisit when a project's infrastructure actually supports
-          it. Avantra is the one candidate today: a self-hosted box with root access, not shared
-          IIS, so a real secrets manager or an encrypted key ring is achievable there in a way it
-          structurally isn't for DMGPT, MedServ, or ModelMosaic.
+          This is the accepted approach specifically because a real certificate/HSM/secrets-manager
+          option isn't available on hosting like this - not a claim that it's secure against a
+          compromised host. Revisit when a project's infrastructure (e.g. a self-hosted box with
+          root access) actually supports something stronger.
+        </p>
+      </section>
+
+      <section className="marker-page-section">
+        <h2>Native mobile clients: the cookie and the header are both valid transports</h2>
+        <p>
+          A project with native mobile apps alongside its web client (Cadence, with a MAUI and a
+          React Native app) doesn't have to choose between this pattern and mobile's existing
+          <code>Authorization: Bearer</code> header - both can carry the identical JWT. A genuine
+          native app already stores its token in real OS-backed secure storage (iOS Keychain,
+          Android Keystore) and treats it as an opaque string it never parses, which is a
+          fundamentally different threat model than a browser page's <code>localStorage</code>:
+          there's no script-injection surface to close, so there's nothing to migrate on the
+          mobile side. Forcing mobile onto a cookie it has no use for would be change for its own
+          sake.
+        </p>
+        <p>
+          <code>OnMessageReceived</code> only falls back to reading the cookie when the request
+          has no <code>Authorization</code> header at all, so a mobile request is never touched and
+          a browser request (which never sends that header) always resolves through the cookie:
+        </p>
+        <div className="code-examples">
+          <CodeBlock
+            example={{
+              label: 'Program.cs - accept either transport on the same token',
+              language: 'csharp',
+              code: `OnMessageReceived = context =>
+{
+    if (string.IsNullOrEmpty(context.Token) && !context.Request.Headers.ContainsKey("Authorization")
+        && context.Request.Cookies.TryGetValue(AuthCookie.Name, out var cookieToken) && !string.IsNullOrEmpty(cookieToken))
+    {
+        context.Token = cookieToken;
+    }
+    return Task.CompletedTask;
+}`,
+            }}
+          />
+        </div>
+        <p>
+          The server still sets the cookie on every login/register response (mobile clients simply
+          ignore it and read the token from the response body instead), so one login endpoint
+          serves both clients without a platform-specific branch.
         </p>
       </section>
 

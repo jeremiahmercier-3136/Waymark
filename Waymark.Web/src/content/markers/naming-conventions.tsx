@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: 'A project folder and its GitHub repo should be PascalCase, not the lowercase domain',
   category: 'Process',
   summary:
-    "Four new personal-site projects were scaffolded as jeremiahmercier, ravenfrost, andrerene, and lucnathanael - the lowercase domain name - instead of matching every other project's PascalCase folder and repo name.",
+    "A personal-site project's folder and repo name should match its PascalCase solution name, not the lowercase domain it's scaffolded from.",
   tags: ['process', 'scaffolding', 'github'],
   isIllustrative: false,
 }
@@ -20,26 +20,20 @@ export default function NamingConventionsPage() {
       <section className="marker-page-section">
         <h2>Symptoms</h2>
         <p>
-          Four new personal-site projects - JeremiahMercier, Ravenfrost, AndreRene, and
-          LucNathanael - had lowercase local folders (<code>jeremiahmercier</code>,{' '}
-          <code>ravenfrost</code>, <code>andrerene</code>, <code>lucnathanael</code>) and lowercase
-          GitHub repos to match, even though every other project on disk and on GitHub
-          (AtlantisTech, Avantra, Bizfront, Cadence, MedServ, ModelMosaic, Runbook, Virtual911,
-          Waymark) uses PascalCase for both. The inconsistency was easy to miss because everything
-          <em> inside</em> each repo was already correctly cased -{' '}
-          <code>Ravenfrost.Api</code>, <code>Ravenfrost.Web</code>, <code>Ravenfrost.slnx</code> -
-          only the folder and repo wrapping them were wrong.
+          A personal-site project ends up with a lowercase local folder and GitHub repo (e.g.{' '}
+          <code>ravenfrost</code>) instead of PascalCase, even though everything{' '}
+          <em>inside</em> it is already correctly cased - <code>Ravenfrost.Api</code>,{' '}
+          <code>Ravenfrost.Web</code>, <code>Ravenfrost.slnx</code>. Easy to miss, since only the
+          folder and repo wrapping them are wrong.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Root cause</h2>
         <p>
-          Each of these is a personal site with a lowercase domain (<code>ravenfrost.com</code>).
-          When scaffolding, the domain name got reused directly as the folder and repo name instead
-          of being treated as a separate, intentionally-lowercase identifier. Nothing in the
-          scaffolding step cross-checked the new folder/repo name against the PascalCase convention
-          every prior project already followed.
+          A personal site's domain is lowercase (<code>ravenfrost.com</code>), and when scaffolding,
+          that domain name gets reused directly as the folder and repo name instead of being treated
+          as a separate, intentionally-lowercase identifier.
         </p>
       </section>
 

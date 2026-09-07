@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: 'A deploy ships, but the browser still shows the old page',
   category: 'Frontend',
   summary:
-    "ASP.NET Core's default static file middleware sets no Cache-Control header, so browsers fall back to their own caching heuristics and can keep serving yesterday's index.html after a new deploy. An audit found six of this workspace's projects had never actually wired this up.",
+    "ASP.NET Core's default static file middleware sets no Cache-Control header, so browsers fall back to their own caching heuristics and can keep serving yesterday's index.html after a new deploy.",
   tags: ['caching', 'spa', 'vite', 'aspnet-core', 'deployment', 'favicon'],
   isIllustrative: false,
 }
@@ -25,14 +25,8 @@ export default function SpaCacheBustingPage() {
           It's inconsistent: it depends on the browser and how long it's been since the last visit.
         </p>
         <p>
-          A favicon specifically can look like a worse case of the same problem: reloading
-          AtlantisTech right after replacing its favicon still showed the old one. Auditing turned
-          up two separate things going on there, not one. First, AtlantisTech had never wired up
-          this marker's fix at all - plain <code>UseStaticFiles()</code> with no options, so{' '}
-          <em>nothing</em> it served had a deliberate <code>Cache-Control</code> header, favicon
-          included. Second, even once that's fixed, a favicon specifically is a real exception -
-          see the note in Resolution below - so it can still take a hard refresh once, and that's
-          not this fix failing.
+          A favicon specifically can look like a worse case of the same problem, but it's a
+          different one - see the note under Resolution below.
         </p>
       </section>
 
@@ -45,10 +39,6 @@ export default function SpaCacheBustingPage() {
           it isn't guaranteed to ask the server whether a new version exists before reusing what it
           already has - even though a fresh <code>index.html</code> is exactly what points the
           browser at each new build's content-hashed JS and CSS files.
-        </p>
-        <p>
-          This had only ever been fixed in the projects that happened to copy it from Avantra or
-          from each other. Nothing made it a default, so it silently didn't happen everywhere else.
         </p>
       </section>
 
@@ -82,9 +72,7 @@ export default function SpaCacheBustingPage() {
       <section className="marker-page-section">
         <h2>Code</h2>
         <p className="note">
-          Taken directly from this project's <code>Program.cs</code> - originally from Avantra,
-          the only one of this workspace's other myasp.net-deployed projects that had already
-          solved this.
+          Taken directly from this project's <code>Program.cs</code>, originally from Avantra.
         </p>
         <div className="code-examples">
           <CodeBlock
@@ -110,15 +98,12 @@ app.MapFallbackToFile("index.html", staticFileOptions);`,
           />
         </div>
         <p className="note">
-          Already correct: Waymark, Avantra, DMGPT, and the four personal sites (JeremiahMercier,
-          Ravenfrost, AndreRene, LucNathanael). Missing this entirely and now fixed: AtlantisTech,
-          Cadence, MedServ, ModelMosaic, Runbook, and Virtual911 - Cadence already had a{' '}
-          <code>StaticFileOptions</code> object for an unrelated reason (a custom{' '}
-          <code>ContentTypeProvider</code> for <code>.apk</code> files), which is why it looked
-          handled at a glance but wasn't. Not applicable: Bizfront's three tracks use a Razor Pages
-          app with .NET's built-in <code>MapStaticAssets()</code> (Main, which fingerprints and
-          caches automatically) and vendor CMS asset pipelines (OrchardCore, Umbraco) rather than a
-          Vite build with this project's <code>/assets/</code> convention.
+          Not applicable to a Razor Pages app using .NET's built-in <code>MapStaticAssets()</code>{' '}
+          (which fingerprints and caches automatically) or a vendor CMS asset pipeline, rather than
+          a Vite build with this project's <code>/assets/</code> convention. Worth double-checking a
+          project that already has a <code>StaticFileOptions</code> object for an unrelated reason
+          (e.g. a custom <code>ContentTypeProvider</code>) - it can look handled at a glance without
+          actually setting <code>Cache-Control</code>.
         </p>
       </section>
     </article>

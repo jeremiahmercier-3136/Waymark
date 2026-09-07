@@ -23,19 +23,18 @@ export default function DevScriptsPage() {
           Starting a project locally means remembering to run two separate commands in two
           terminals - <code>dotnet run</code> for the API, <code>npm run dev</code> for the UI -
           and if the UI starts first, its dev proxy accepts requests before the API is listening,
-          so the first API call fails. Separately, running two of this workspace's projects side
-          by side (to compare or test them together) fails to start one of them, because their
-          default Vite and Kestrel ports collide - this project's own web dev server was on port
-          5178, already claimed by two other projects, until this marker was written.
+          so the first API call fails. Separately, two of this workspace's projects can't run side
+          by side if their default Vite/Kestrel ports collide, which happens easily since new
+          projects tend to reuse whatever port an earlier one used.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Root cause</h2>
         <p>
-          Each project's dev ports were picked without checking what the rest of the workspace was
-          already using, and starting the API and UI processes at the same instant gives the UI's
-          dev proxy nothing to reach for its first request.
+          Starting the API and UI processes at the same instant gives the UI's dev proxy nothing to
+          reach for its first request, and dev ports get picked without checking what the rest of
+          the workspace is already using.
         </p>
       </section>
 

@@ -52,13 +52,9 @@ export default function DeployPathFiltersPage() {
           filter.
         </p>
         <p>
-          This was first added standalone in Cadence, then generalized across AtlantisTech,
-          Avantra, MedServ, ModelMosaic, Runbook, and Virtual911 in the same
-          "Optimize GitHub Actions usage" pass that also added <code>timeout-minutes</code> to the
-          deploy job and pinned <code>talunzhang/auto-web-deploy</code> to a commit SHA - worth
-          doing at the same time as adding a path filter to a new project, per{' '}
-          <Link to="/markers/myasp-deploy">myasp-deploy</Link>, but a separate concern from the
-          filter itself.
+          Worth doing in the same pass as the filter: add <code>timeout-minutes</code> to the
+          deploy job, and pin <code>talunzhang/auto-web-deploy</code> (see{' '}
+          <Link to="/markers/myasp-deploy">myasp-deploy</Link>) to a commit SHA rather than a tag.
         </p>
       </section>
 

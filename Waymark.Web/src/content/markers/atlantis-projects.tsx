@@ -57,9 +57,8 @@ export default function AtlantisProjectsPage() {
           This project's own card, added to AtlantisTech when this marker was written - see{' '}
           <a href="https://github.com/jeremiahmercier-3136/AtlantisTech/blob/main/AtlantisTech.Web/src/pages/Projects.tsx">
             AtlantisTech.Web/src/pages/Projects.tsx
-          </a>{' '}
-          (moved there from <code>App.tsx</code> in a later restructuring - the projects list,
-          the status page, and the rest of the site are now separate route pages).
+          </a>
+          .
         </p>
         <div className="code-examples">
           <CodeBlock
@@ -99,12 +98,8 @@ export default function AtlantisProjectsPage() {
           />
         </div>
         <p className="note">
-          The <code>site-status</code> list is the one every deployed project belongs on,
-          personal sites included. As of this writing it covers André René, Atlantis Technologies,
-          Avantra, Bizfront, Cadence, DMGPT, Jeremiah Mercier, Luc Nathanael, MedServ, Model
-          Mosaic, Ravenfrost, Runbook, Virtual911, and Waymark - the two personal sites (André
-          René, Luc Nathanael) were live but missing from this list until this marker's review
-          caught it.
+          The <code>site-status</code> list is the one every deployed project belongs on, personal
+          sites included.
         </p>
       </section>
     </article>

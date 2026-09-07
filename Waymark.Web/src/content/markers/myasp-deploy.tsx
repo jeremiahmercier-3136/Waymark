@@ -74,15 +74,6 @@ export default function MyaspDeployPage() {
           as a whole string - see <Link to="/markers/postgres-docker">postgres-docker</Link> for
           why and how.
         </p>
-        <p className="note">
-          MedServ, ModelMosaic, DMGPT, Virtual911, and Runbook were still setting real production
-          secrets as myASP.NET application-environment variables - or, for DMGPT and Runbook,
-          hadn't wired their secrets into deployment at all yet - rather than GitHub secrets merged
-          into <code>appsettings.Production.json</code>. All five were migrated to this pattern,
-          and Cadence's existing whole-connection-string secret was migrated to the{' '}
-          <Link to="/markers/postgres-docker">postgres-docker</Link> template-plus-password shape
-          for consistency.
-        </p>
         <p>
           Because the app pool is shared across sites, each API project sets{' '}
           <code>{'<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>'}</code> - in-process

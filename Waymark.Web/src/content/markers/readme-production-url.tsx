@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: "State the project's live URL in its README, next to how it deploys",
   category: 'Process',
   summary:
-    "MedServ, ModelMosaic, DMGPT, Runbook, and Avantra's READMEs all say where the site is live. The four personal sites, Cadence, and AtlantisTech document the deploy mechanism - the pipeline, the repository variables, the secret it needs - in real detail, and never once state the URL that mechanism actually produces.",
+    "A README can document a deploy pipeline in real detail - the workflow, the repository variables, the secret it needs - and still never state the URL that pipeline actually produces.",
   tags: ['readme', 'documentation', 'process', 'deployment'],
   isIllustrative: false,
 }
@@ -20,38 +20,29 @@ export default function ReadmeProductionUrlPage() {
       <section className="marker-page-section">
         <h2>Symptoms</h2>
         <p>
-          The four personal sites' <code>README.md</code> "Deployment" sections describe the
-          myasp.net pipeline, the repository variables, and the secret it needs, in real detail -
-          and never once state <code>jeremiahmercier.com</code>, <code>ravenfrost.com</code>,{' '}
-          <code>andrerene.com</code>, or <code>lucnathanael.com</code>. Cadence's "Production
-          configuration and notifications" section covers connection strings, VAPID keys, and push
-          credentials at length without ever stating <code>meetcaden.site</code> - it only shows up
-          incidentally, in a privacy-policy link. AtlantisTech's README names its own domain
-          exactly once, in the opening sentence, never under a deployment or production heading.
-          Finding out where any of these five actually run means reading the deploy workflow's
-          repository variables or asking whoever set it up, not opening the README.
+          A README's "Deployment" section documents the pipeline, the repository variables, and the
+          secret it needs, in real detail - and never once states the URL that pipeline actually
+          produces. Finding out where the project is actually live means reading the deploy
+          workflow's repository variables or asking whoever set it up, not opening the README.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Root cause</h2>
         <p>
-          MedServ, ModelMosaic, DMGPT, Runbook, and Avantra's READMEs all state their live URL,
-          but only because each of them already needed it for something else - a health-check
-          path, a webhook target, a privacy-policy link - not because "state the URL" was ever a
-          rule of its own. Nothing said a README has to state where a project is live, only that it
-          should document how to deploy it, so the two habits split apart: writing about a pipeline
-          happens naturally while building it, and the URL that pipeline produces gets left out
-          once the site is already running and nobody's re-reading the README.
+          A README stating its live URL usually only does so because something else already needed
+          it - a health-check path, a webhook target, a privacy-policy link - not because "state the
+          URL" was ever a rule of its own. Writing about the pipeline happens naturally while
+          building it; the URL that pipeline produces gets left out once the site is already running
+          and nobody's re-reading the README.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Resolution</h2>
         <p>
-          State the project's public URL under the same "Deployment" (or "Production") heading
-          that already documents the deploy mechanism - one line, right next to it, the same place
-          MedServ, ModelMosaic, DMGPT, Runbook, and Avantra already put it.
+          State the project's public URL under the same "Deployment" (or "Production") heading that
+          already documents the deploy mechanism - one line, right next to it.
         </p>
         <p className="note">
           This is about the site's own public address specifically - the thing a browser goes to.
@@ -91,11 +82,8 @@ the API, web app, their tests, \`Dmgpt.slnx\`, or the deploy workflow itself tri
           />
         </div>
         <p className="note">
-          Added to JeremiahMercier, Ravenfrost, AndreRene, LucNathanael, Cadence, and AtlantisTech.
-          Bizfront is a separate case: it has three deployable tracks (Main at{' '}
-          <code>bizfront.cc</code>, plus <code>orchard.bizfront.cc</code> and{' '}
-          <code>umbraco.bizfront.cc</code>) still in active side-by-side evaluation, so its own
-          README defers to each track's README rather than stating one URL itself.
+          A project with multiple deployable tracks under active side-by-side evaluation can defer
+          to each track's own README rather than stating one URL at the top level.
         </p>
       </section>
     </article>

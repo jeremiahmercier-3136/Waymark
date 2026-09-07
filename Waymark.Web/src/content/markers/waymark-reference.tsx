@@ -7,7 +7,7 @@ export const meta: MarkerMeta = {
   title: "Every project's AGENTS.md points back to Waymark",
   category: 'Process',
   summary:
-    "Only the four personal sites mentioned Waymark at all, and only in passing as part of the tech-stack marker - AtlantisTech, Avantra, Bizfront, Cadence, DMGPT, MedServ, ModelMosaic, Runbook, and Virtual911 had no reference to it, so an agent starting a session there had no way to know it existed.",
+    "A project with no standing reference to Waymark in its AGENTS.md gives an agent working there no way to know Waymark - or any marker already written for the problem at hand - exists.",
   tags: ['process', 'agents-md', 'waymark'],
   isIllustrative: false,
 }
@@ -21,22 +21,15 @@ export default function WaymarkReferencePage() {
         <h2>Symptoms</h2>
         <p>
           A problem gets diagnosed from scratch in one project even though Waymark already has a
-          marker for the exact thing, because nothing in that project told the agent working in it
-          that Waymark exists. Checking turned up only one existing mention anywhere: the four
-          personal sites (JeremiahMercier, Ravenfrost, AndreRene, LucNathanael) reference Waymark's{' '}
-          <code>tech-stack</code> marker, but only as a one-off aside inside an unrelated bullet, not
-          as a standing pointer. AtlantisTech, Avantra, Bizfront, Cadence, DMGPT, MedServ,
-          ModelMosaic, Runbook, and Virtual911 didn't mention it at all - Runbook didn't even have an{' '}
-          <code>AGENTS.md</code> to put it in.
+          marker for the exact thing, because nothing in that project's <code>AGENTS.md</code> told
+          the agent working there that Waymark exists.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Root cause</h2>
         <p>
-          Waymark was created after most of these projects already existed, and nothing about
-          creating it (or about starting a later project) included a step to wire the consumer back
-          to it. <code>AGENTS.md</code> is the first thing an agent reads at the start of a session -
+          <code>AGENTS.md</code> is the first thing an agent reads at the start of a session -
           anything not stated there doesn't exist as far as that session is concerned, no matter how
           many prior sessions in other projects already solved the same problem and wrote it down.
         </p>
@@ -50,15 +43,16 @@ export default function WaymarkReferencePage() {
           problem that feels familiar, and add a new one afterward for anything that took real time
           to diagnose or is a decision worth remembering. It goes first in the bullet list, right
           after the title, so it's read before anything project-specific rather than buried among
-          it. A project with no <code>AGENTS.md</code> yet (Runbook) gets a minimal one created just
-          to carry this line, rather than staying unreferenced because the file didn't already exist.
+          it. A project with no <code>AGENTS.md</code> yet gets a minimal one created just to carry
+          this line.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Code</h2>
         <p className="note">
-          The bullet added to every project's <code>AGENTS.md</code> in this workspace.
+          The bullet every other project's <code>AGENTS.md</code> carries. Waymark itself is the
+          thing being pointed to, so it doesn't carry a copy of its own bullet.
         </p>
         <div className="code-examples">
           <CodeBlock
@@ -72,11 +66,6 @@ export default function WaymarkReferencePage() {
             }}
           />
         </div>
-        <p className="note">
-          Added to AtlantisTech, Avantra, Bizfront, Cadence, DMGPT, MedServ, ModelMosaic, Runbook,
-          Virtual911, JeremiahMercier, Ravenfrost, AndreRene, and LucNathanael. Waymark itself is the
-          thing being pointed to, so it doesn't carry a copy of its own bullet.
-        </p>
       </section>
     </article>
   )

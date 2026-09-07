@@ -55,21 +55,17 @@ export default function ProdTroubleshootingPage() {
           retrieved logs by that ID alone.
         </p>
         <p>
-          The database half of this - endpoints that serve pertinent table state under the same
-          signature scheme - has no real precedent yet anywhere in this workspace, and Waymark has
-          no database (see <code>postgres-docker</code>) to build one against. The mechanism above
-          - certificate-signed, <code>AllowAnonymous</code>, opaque <code>404</code> on failure -
-          is the pattern to extend once a project has both a database and an actual troubleshooting
-          need, rather than something to fabricate ahead of one.
+          The same mechanism - certificate-signed, <code>AllowAnonymous</code>, opaque{' '}
+          <code>404</code> on failure - extends to endpoints that serve database state, once a
+          project has both a database and an actual need for it.
         </p>
       </section>
 
       <section className="marker-page-section">
         <h2>Code</h2>
         <p className="note">
-          Taken directly from this project - the pattern Cadence established and ModelMosaic
-          mirrored, implemented here for the first time with a real certificate, verified end to
-          end with a real signed request against a real published build.
+          Taken directly from this project, following the pattern Cadence and ModelMosaic
+          established.
         </p>
         <div className="code-examples">
           <CodeBlock
