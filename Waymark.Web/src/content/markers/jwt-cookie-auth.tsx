@@ -109,6 +109,44 @@ export default function JwtCookieAuthPage() {
       </section>
 
       <section className="marker-page-section">
+        <h2>Signing key storage: honest about the ceiling</h2>
+        <p>
+          No managed certificate or HSM-backed key store is available on the shared myasp.net
+          hosting DMGPT, MedServ, and ModelMosaic deploy to - confirmed, not assumed. ModelMosaic's
+          own <code>docs/data-protection-keys.md</code> records two separate production attempts
+          (2026-09-01/02) to encrypt Data Protection's key ring with a certificate, both failing
+          with the identical <code>CryptographicException</code> from the host's locked-down IIS
+          App Pool blocking native PKCS12 import - two structurally different loading strategies,
+          the same wall both times.
+        </p>
+        <p>
+          Given that ceiling, provisioning <code>SigningKey</code> as a GitHub Actions secret and
+          merging it into <code>appsettings.Production.json</code> at deploy time gives it no
+          at-rest protection beyond what an unmanaged, auto-generated key - the shape something
+          like IdentityServer's <code>AddDeveloperSigningCredential()</code> produces - would have
+          on the same host. Once deployed, it's plaintext on the server either way: readable to
+          anyone with server-level access, no HSM, no envelope encryption. Calling this pattern
+          more secure than that on this hosting would be exactly the kind of overstatement this
+          marker exists to correct, not repeat.
+        </p>
+        <p>
+          What genuinely differs, and is worth keeping despite that ceiling: the key never passes
+          through git history, a pull request diff, or a CI log during provisioning - GitHub
+          redacts secret values from logs and never exposes a set value back to anyone, including
+          whoever set it. And rotating it is one clean, known step (update the secret, redeploy)
+          instead of an auto-generated file with no designed rotation path at all.
+        </p>
+        <p className="note">
+          This is the accepted approach for now specifically because a real certificate/HSM/
+          secrets-manager option isn't available on this hosting - not a claim that it's secure
+          against a compromised host. Revisit when a project's infrastructure actually supports
+          it. Avantra is the one candidate today: a self-hosted box with root access, not shared
+          IIS, so a real secrets manager or an encrypted key ring is achievable there in a way it
+          structurally isn't for DMGPT, MedServ, or ModelMosaic.
+        </p>
+      </section>
+
+      <section className="marker-page-section">
         <h2>Code</h2>
         <p className="note">
           Trimmed from DMGPT's implementation to the reusable shape.
