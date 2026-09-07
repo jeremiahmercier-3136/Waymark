@@ -18,6 +18,12 @@ Each entry - a **marker** - records:
 - **Root cause** - why it happened, not just what fixed it.
 - **Resolution** - the specific change that resolved it.
 
+A marker documents a pattern and its fix, not an investigation. Symptoms and root cause exist only
+to give the resolution enough context to make sense, not to recount how the problem was found -
+keep them to a sentence or two each. Leave out which project it happened in, when, and how it was
+confirmed, unless that detail is itself part of the fix (a specific version, a specific
+environment). If a marker reads like a diary of an incident, it's carrying more than it needs to.
+
 ## Current state
 
 The catalog holds real markers only, drawn from actual decisions and practice in this workspace.
@@ -86,7 +92,9 @@ npm run test
    route pick it up.
 
 Only add a marker for a problem that actually took real time to diagnose (or a decision that
-actually got made) and is likely to come up again - not a one-off typo. Set `isIllustrative: true`
+actually got made) and is likely to come up again - not a one-off typo. Write it as a reusable
+pattern, not a report on the incident that prompted it - see "Why this exists" above. Set
+`isIllustrative: true`
 only for placeholder entries that demonstrate the format rather than recording something that
 actually happened - never for a real marker, and never leave it unset for an illustrative one. This
 is what keeps illustrative content from being mistaken for real project history in the web UI's
