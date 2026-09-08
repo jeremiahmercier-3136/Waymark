@@ -88,6 +88,18 @@ export default function OvhVpsDeployPage() {
           configured deployment yet.
         </p>
         <p>
+          Build and actually run every image against a real dependency before trusting it, not just
+          read the Dockerfile - the same lesson Avantra's own <code>worker.Dockerfile</code> comment
+          records for a missing <code>COPY</code>, generalized: a <code>.dockerignore</code> that
+          doesn't mirror <code>.gitignore</code>'s local-runtime-state exclusions lets a gitignored,
+          on-disk-only directory (invisible to <code>git status</code>) get copied into the build
+          context and published straight into the image. If that directory is a CMS's own local
+          data/state folder, the app can boot, pass a naive health check, and still be silently
+          running on leftover local data instead of the real database - worth an explicit
+          build-and-run check against a real dependency, since nothing about a successful build
+          alone would ever catch it.
+        </p>
+        <p>
           Same secret-vs-variable split as <code>myasp-deploy</code>: the private key is a real
           credential, so it's a <strong>secret</strong> (<code>OVH_SSH_PRIVATE_KEY</code>); the host
           and deploy username aren't sensitive, just configuration, so they're repo{' '}
