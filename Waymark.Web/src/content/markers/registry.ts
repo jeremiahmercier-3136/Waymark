@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import * as techStack from './tech-stack'
 import * as myaspDeploy from './myasp-deploy'
+import * as ovhVpsDeploy from './ovh-vps-deploy'
 import * as deployPathFilters from './deploy-path-filters'
 import * as devScripts from './dev-scripts'
 import * as postgresDocker from './postgres-docker'
@@ -26,6 +27,7 @@ type MarkerModule = { meta: MarkerMeta; default: ComponentType }
 const modules: MarkerModule[] = [
   techStack,
   myaspDeploy,
+  ovhVpsDeploy,
   deployPathFilters,
   devScripts,
   postgresDocker,
