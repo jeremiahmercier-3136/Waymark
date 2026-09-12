@@ -20,6 +20,7 @@ import * as waymarkReference from './waymark-reference'
 import * as readmeProductionUrl from './readme-production-url'
 import * as jwtCookieAuth from './jwt-cookie-auth'
 import * as issuesDocRedGreen from './issues-doc-red-green'
+import * as productOverviewDoc from './product-overview-doc'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -46,6 +47,7 @@ const modules: MarkerModule[] = [
   readmeProductionUrl,
   jwtCookieAuth,
   issuesDocRedGreen,
+  productOverviewDoc,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))
