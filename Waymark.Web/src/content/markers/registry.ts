@@ -21,6 +21,7 @@ import * as readmeProductionUrl from './readme-production-url'
 import * as jwtCookieAuth from './jwt-cookie-auth'
 import * as issuesDocRedGreen from './issues-doc-red-green'
 import * as productOverviewDoc from './product-overview-doc'
+import * as slidingSessionRefresh from './sliding-session-refresh'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -48,6 +49,7 @@ const modules: MarkerModule[] = [
   jwtCookieAuth,
   issuesDocRedGreen,
   productOverviewDoc,
+  slidingSessionRefresh,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))
