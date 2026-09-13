@@ -1,5 +1,6 @@
 import { CodeBlock } from '../../components/CodeBlock'
 import { MarkerPageHeader } from '../../components/MarkerPageHeader'
+import { Link } from 'react-router-dom'
 import type { MarkerMeta } from './types'
 
 export const meta: MarkerMeta = {
@@ -57,9 +58,10 @@ export default function ReuseFirstPage() {
           collapsing near-duplicates, and dropping abstractions that no longer earn their keep are
           part of the change itself, not a separate cleanup pass deferred to later. And hold the
           result to current standards rather than whatever's already nearby - modern, non-deprecated
-          idioms for the language and framework in use (an easy default to miss, since training data
-          can lag behind current convention), and UI that's accessible and responsive, built from the
-          existing design system's components rather than a new one-off pattern per feature.
+          idioms for the language and framework in use, an easy default to miss since training data
+          can lag behind current convention. (UI specifically has its own dedicated marker, since
+          "keep it consistent" needs more than a clause to say usefully - see{' '}
+          <Link to="/markers/consistent-theme">consistent-theme</Link>.)
         </p>
       </section>
 
@@ -78,9 +80,8 @@ export default function ReuseFirstPage() {
             example={{
               label: 'AGENTS.md',
               language: 'markdown',
-              code: `- Follow modern development standards and UI/UX conventions for whichever language, framework, and
-  design system a change is in - don't default to outdated idioms just because older code nearby
-  still uses them.
+              code: `- Follow modern development standards for whichever language and framework a change is in - don't
+  default to outdated idioms just because older code nearby still uses them.
 - Before writing new code, look for a similar solution already in the codebase and reuse or extend
   it rather than duplicate it - only add new code once reuse and refactoring the existing solution
   have been ruled out.

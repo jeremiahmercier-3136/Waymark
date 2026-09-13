@@ -23,6 +23,7 @@ import * as issuesDocRedGreen from './issues-doc-red-green'
 import * as productOverviewDoc from './product-overview-doc'
 import * as slidingSessionRefresh from './sliding-session-refresh'
 import * as reuseFirst from './reuse-first'
+import * as consistentTheme from './consistent-theme'
 import type { MarkerMeta } from './types'
 
 type MarkerModule = { meta: MarkerMeta; default: ComponentType }
@@ -52,6 +53,7 @@ const modules: MarkerModule[] = [
   productOverviewDoc,
   slidingSessionRefresh,
   reuseFirst,
+  consistentTheme,
 ]
 
 export const markers = modules.map((m) => ({ meta: m.meta, Component: m.default }))

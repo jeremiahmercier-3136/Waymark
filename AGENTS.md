@@ -10,9 +10,8 @@
 - Keep implementation steps narrow and independently testable.
 - Run relevant builds and tests after every change.
 - Do not add unnecessary abstractions or infrastructure.
-- Follow modern development standards and UI/UX conventions for whichever language, framework, and
-  design system a change is in - don't default to outdated idioms just because older code nearby
-  still uses them.
+- Follow modern development standards for whichever language and framework a change is in - don't
+  default to outdated idioms just because older code nearby still uses them.
 - Before writing new code, look for a similar solution already in the codebase and reuse or extend
   it rather than duplicate it - only add new code once reuse and refactoring the existing solution
   have been ruled out.
@@ -22,6 +21,15 @@
 - Favor reducing or eliminating code over adding it: removing dead code, collapsing near-duplicates,
   and dropping abstractions that no longer earn their keep are part of the change itself, not a
   separate cleanup pass.
+- Define the app's visual language once, as tokens (color, type scale, spacing, radius) and shared
+  components (button, input, nav) built from them, and build every page from those primitives -
+  never redefine a button, input, or one-off color locally per page or feature.
+- Navigation - menus, hamburgers, avatar dropdowns - follows the interaction pattern users already
+  expect: a small number of clearly labeled, grouped top-level destinations, an avatar menu for
+  account actions, a hamburger that collapses the same primary nav on narrow screens. Not a flat
+  list of every available action, and not a new interaction model per project.
+- Check every text/background color pairing against the theme's defined tokens for real contrast
+  (WCAG AA - 4.5:1 for body text, 3:1 for large text) before shipping it - never eyeball it.
 - Once a feature's initial version (a proof of concept) is working, switch to red-green TDD for
   further changes: for every reported bug or requested behavior change, first write a test that
   captures the desired behavior and fails, then implement until it passes. Tests must exercise the
