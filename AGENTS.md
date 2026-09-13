@@ -10,6 +10,18 @@
 - Keep implementation steps narrow and independently testable.
 - Run relevant builds and tests after every change.
 - Do not add unnecessary abstractions or infrastructure.
+- Follow modern development standards and UI/UX conventions for whichever language, framework, and
+  design system a change is in - don't default to outdated idioms just because older code nearby
+  still uses them.
+- Before writing new code, look for a similar solution already in the codebase and reuse or extend
+  it rather than duplicate it - only add new code once reuse and refactoring the existing solution
+  have been ruled out.
+- When duplicate implementations of the same concern turn up - pre-existing, or introduced by the
+  current change - consolidate them into one and update every call site, rather than leaving both to
+  diverge.
+- Favor reducing or eliminating code over adding it: removing dead code, collapsing near-duplicates,
+  and dropping abstractions that no longer earn their keep are part of the change itself, not a
+  separate cleanup pass.
 - Once a feature's initial version (a proof of concept) is working, switch to red-green TDD for
   further changes: for every reported bug or requested behavior change, first write a test that
   captures the desired behavior and fails, then implement until it passes. Tests must exercise the
